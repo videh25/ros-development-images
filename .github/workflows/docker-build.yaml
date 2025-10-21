@@ -51,13 +51,6 @@ jobs:
         uses: actions/checkout@v4
 
       # -----------------------------------------------------------
-      # 2. Setup Docker Buildx
-      # Recommended to ensure advanced features (like caching) are available
-      # -----------------------------------------------------------
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      # -----------------------------------------------------------
       # 3. Log into GHCR
       # Uses the built-in GITHUB_TOKEN to securely authenticate
       # -----------------------------------------------------------
@@ -86,6 +79,3 @@ jobs:
           
           # Define the tags using the matrix value
           tags: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
-          # Use local cache for faster builds
-          cache-from: type=local,dest=/home/${{ matrix.images.output_tag }},mode=max
-          cache-to: type=local,dest=/home/${{ matrix.images.output_tag }},mode=max,compression=zstd
