@@ -64,9 +64,9 @@ jobs:
           
       # -----------------------------------------------------------
       # 4. Build and Push the Image
-      # This step runs for EACH build_image defined in the matrix.
+      # This step runs for EACH base_image defined in the matrix.
       # -----------------------------------------------------------
-      - name: Build and push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.build_name.name }} Docker image
+      - name: Build and push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.base_image.name }} Docker image
         uses: docker/build-push-action@v5
         with:
           # Build-time argument is passed using the matrix value
@@ -79,7 +79,7 @@ jobs:
           push: true
           
           # Define the tags using the matrix value
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.build_name.name }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.base_image.name }}
           # Use local cache for faster builds
           cache-from: type=local,scope=${{ matrix.base_image.name }},mode=max
           cache-to: type=local,scope=${{ matrix.base_image.name }},mode=max,compression=zstd
