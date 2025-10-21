@@ -1,6 +1,5 @@
 # Base ROS 2 Humble on Ubuntu 22.04
 ARG BASE_IMAGE=osrf/ros:jazzy-desktop-noble
-ARG NVIM_CONFIG_REPO=https://github.com/videh25/nvim_config.git
 
 FROM ${BASE_IMAGE}
 
@@ -65,9 +64,10 @@ RUN git config --global user.name "Videh Patel" \
  && git config --global user.email "videhpatel25@gmail.com"
 
 
+# ARG NVIM_CONFIG_REPO=https://github.com/videh25/nvim_config.git
 # ---- LazyVim setup ----
 # Clone your LazyVim config into ~/.config/nvim
-RUN git clone ${NVIM_CONFIG_REPO} ~/.config/nvim
+RUN git clone https://github.com/videh25/nvim_config.git ~/.config/nvim
 
 # Install plugins automatically (LazyVim supports automatic plugin install)
 RUN nvim --headless "+Lazy! sync" "+TSUpdate" +qa
