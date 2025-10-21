@@ -87,5 +87,5 @@ jobs:
           # Define the tags using the matrix value
           tags: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
           # Use local cache for faster builds
-          cache-from: type=local,scope=${{ matrix.images.output_tag }},mode=max
-          cache-to: type=local,scope=${{ matrix.images.output_tag }},mode=max,compression=zstd
+          cache-from: type=local,path=/home/${{ matrix.images.output_tag }},mode=max
+          cache-to: type=local,path=/home/${{ matrix.images.output_tag }},mode=max,compression=zstd
