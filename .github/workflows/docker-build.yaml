@@ -49,6 +49,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       # -----------------------------------------------------------
       # 3. Log into GHCR
@@ -79,3 +82,6 @@ jobs:
           
           # Define the tags using the matrix value
           tags: ${{ vars.REGISTRY }}/${{ github.actor }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: false
