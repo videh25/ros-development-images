@@ -78,4 +78,4 @@ jobs:
           push: true
           
           # Define the tags using the matrix value
-          tags: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
+          tags: ${{ vars.REGISTRY }}/${{ github.actor }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
