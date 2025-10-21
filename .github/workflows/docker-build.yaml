@@ -7,12 +7,6 @@ on:
   # Allows manual triggering from the GitHub Actions UI
   workflow_dispatch:
 
-# Define environment variables used throughout the workflow
-env:
-  REGISTRY: ghcr.io
-  # The image name uses the repository owner and name: ghcr.io/OWNER/REPO
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   # The 'build' job will run multiple times based on the matrix strategy
   build_and_publish:
@@ -29,16 +23,28 @@ jobs:
     # -----------------------------------------------------------
     strategy:
       matrix:
-        base_image:
-          - name: ros:humble-ros-base-jammy
-          - name: osrf/ros:humble-desktop-full-jammy
-          - name: ros:jazzy-ros-base-noble
-          - name: osrf/ros:jazzy-desktop-full-noble
-          - name: ros:rolling-ros-base-noble
-          - name: osrf/ros:rolling-desktop-full-noble
+        images:
+          - input_name: ros
+            input_tag: humble-ros-base-jammy
+            output_tag: humble-base-jammy
+          - input_name: osrf/ros
+            input_tag: humble-desktop-full-jammy
+            output_tag: humble-desktop-jammy
+          - input_name: ros
+            input_tag: jazzy-ros-base-noble
+            output_tag: jazzy-base-noble
+          - input_name: osrf/ros
+            input_tag: jazzy-desktop-full-noble
+            output_tag: jazzy-desktop-noble
+          - input_name: ros
+            input_tag: rolling-ros-base-noble
+            output_tag: rolling-base-noble
+          - input_name: osrf/ros
+            input_tag: rolling-desktop-full-noble
+            output_tag: rolling-desktop-noble
             
     # The job name will be dynamically set (e.g., "Build Development Image")
-    name: Build ${{ matrix.base_image.name }} Image
+    name: Build ${{ matrix.images.tag }} Image
 
     steps:
       - name: Checkout repository
@@ -58,19 +64,19 @@ jobs:
       - name: Log into GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ${{ vars.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GH_TOKEN }}
           
       # -----------------------------------------------------------
       # 4. Build and Push the Image
-      # This step runs for EACH base_image defined in the matrix.
+      # This step runs for EACH images defined in the matrix.
       # -----------------------------------------------------------
-      - name: Build and push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.base_image.name }} Docker image
+      - name: Build and push ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }} docker image
         uses: docker/build-push-action@v5
         with:
           # Build-time argument is passed using the matrix value
-          build-args: BASE_IMAGE=${{ matrix.base_image.name }}
+          build-args: BASE_IMAGE=${{ matrix.images.input_name }}:${{ matrix.images.input_tag }}
           
           # The Dockerfile is located in the repository root
           file: ./Dockerfile.base
@@ -79,7 +85,7 @@ jobs:
           push: true
           
           # Define the tags using the matrix value
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.base_image.name }}
+          tags: ${{ vars.REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ matrix.images.output_tag }}
           # Use local cache for faster builds
-          cache-from: type=local,scope=${{ matrix.base_image.name }},mode=max
-          cache-to: type=local,scope=${{ matrix.base_image.name }},mode=max,compression=zstd
+          cache-from: type=local,scope=${{ matrix.images.output_tag }},mode=max
+          cache-to: type=local,scope=${{ matrix.images.output_tag }},mode=max,compression=zstd
