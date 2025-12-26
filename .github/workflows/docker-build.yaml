@@ -4,8 +4,14 @@ name: Multi-Image Docker Build & Publish
 on:
   push:
     branches: [ main ]
+  schedule:
+    # Runs at 00:00 UTC on the 1st and 15th of every month
+    - cron: '0 0 1,15 * *'
   # Allows manual triggering from the GitHub Actions UI
   workflow_dispatch:
+  # Allows triggering from the neovim config repository
+  repository_dispatch:
+    types: [ update ]
 
 jobs:
   # The 'build' job will run multiple times based on the matrix strategy
