@@ -74,6 +74,6 @@ RUN nvim --headless "+Lazy! sync" "+TSUpdate" +qa
 
 # Source ROS 2 setup
 SHELL ["/bin/bash", "-c"]
-RUN echo ". /ros_entrypoint.sh" >> ~/.bashrc
+RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> ~/.bashrc
 
 CMD ["bash"]
