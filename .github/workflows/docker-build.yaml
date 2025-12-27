@@ -48,6 +48,9 @@ jobs:
           - input_name: osrf/ros
             input_tag: rolling-desktop-full-noble
             output_tag: rolling-desktop-noble
+          - input_name: ghcr.io/ros-navigation/navigation2
+            input_tag: main-1.4.0
+            output_tag: nav2-main-1.4.0
             
     # The job name will be dynamically set (e.g., "Build Development Image")
     name: Build ${{ matrix.images.output_tag }} Image
