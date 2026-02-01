@@ -51,7 +51,10 @@ jobs:
           - input_name: ghcr.io/ros-navigation/navigation2
             input_tag: main-1.4.0
             output_tag: nav2-main-1.4.0
-            
+          - input_name: ghcr.io/ros-navigation/nav2_docker
+            input_tag: rolling-nightly
+            output_tag: nav2-rolling-nightly
+
     # The job name will be dynamically set (e.g., "Build Development Image")
     name: Build ${{ matrix.images.output_tag }} Image
 
