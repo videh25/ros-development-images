@@ -53,7 +53,15 @@ RUN apt update && apt install -y \
     xclip \
     fd-find \
     ripgrep \
+    bash-completion \
  && rm -rf /var/lib/apt/lists/*
+
+# Get git autocompletion working
+RUN cat <<'EOF' >> ~/.bashrc
+if [ -f /usr/share/bash-completion/completions/git ]; then
+  source /usr/share/bash-completion/completions/git
+fi
+EOF
 
 # Install Node.js and npm (LTS)
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
@@ -69,6 +77,13 @@ RUN git clone https://github.com/neovim/neovim.git /neovim \
  && make install \
  && cd / \
  && rm -rf /neovim
+
+# Install lazygit
+RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*') && \
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" && \
+    tar xf lazygit.tar.gz lazygit && \
+    install lazygit /usr/local/bin && \
+    rm lazygit.tar.gz lazygit
 
 USER $USERNAME
 WORKDIR /home/$USERNAME
